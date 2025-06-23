@@ -5,6 +5,8 @@
 import nltk
 import spacy
 from pathlib import Path
+import pandas as pd
+import os
 
 
 nlp = spacy.load("en_core_web_sm")
