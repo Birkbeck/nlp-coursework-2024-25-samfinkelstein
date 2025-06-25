@@ -46,7 +46,7 @@ def read_novels(path=Path.cwd() / "texts" / "novels"):
     """Reads texts from a directory of .txt files and returns a DataFrame with the text, title,
     author, and year"""
     noveldata = []
-    filetype = ".txt"
+    filetype = '.txt'
     for file in os.listdir(path):
         filepath = os.path.join(path, file)
         purename = os.path.splitext(file)[0]
@@ -61,8 +61,6 @@ def read_novels(path=Path.cwd() / "texts" / "novels"):
     dataframe = dataframe.sort_values('year').reset_index(drop=True)
     return dataframe
         
-    
-
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
@@ -114,10 +112,10 @@ if __name__ == "__main__":
     """
     uncomment the following lines to run the functions once you have completed them
     """
-    #path = Path.cwd() / "p1-texts" / "novels"
-    #print(path)
-    #df = read_novels(path) # this line will fail until you have completed the read_novels function above.
-    #print(df.head())
+    path = Path.cwd() / "p1-texts" / "novels"
+    print(path)
+    df = read_novels(path) # this line will fail until you have completed the read_novels function above.
+    print(df.head())
     #nltk.download("cmudict")
     #parse(df)
     #print(df.head())
@@ -136,4 +134,3 @@ if __name__ == "__main__":
         print(subjects_by_verb_pmi(row["parsed"], "hear"))
         print("\n")
     """
-    print('hello')
