@@ -3,6 +3,7 @@
 # Note: The template functions here and the dataframe format for structuring your solution is a suggested but not mandatory approach. You can use a different approach if you like, as long as you clearly answer the questions and communicate your answers clearly.
 
 import nltk
+from nltk.tokenize import RegexpTokenizer
 import spacy
 from pathlib import Path
 import pandas as pd
@@ -69,7 +70,9 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
 
 
 def nltk_ttr(text):
-    """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
+    """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize.""" #seems like the wrong advice given constraints of question so using a different nltk tokenizer
+    tokens = RegexpTokenizer(r"\b\w+(?:'/w+)?\b").tokenize(text)
+    tokencount = len(tokens)
     pass
 
 

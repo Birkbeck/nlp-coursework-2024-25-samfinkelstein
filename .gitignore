@@ -198,4 +198,4 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-nltkenv/
+.nltkenv/
