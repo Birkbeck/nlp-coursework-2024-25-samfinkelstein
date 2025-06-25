@@ -45,7 +45,23 @@ def count_syl(word, d):
 def read_novels(path=Path.cwd() / "texts" / "novels"):
     """Reads texts from a directory of .txt files and returns a DataFrame with the text, title,
     author, and year"""
-    pass
+    noveldata = []
+    filetype = ".txt"
+    for file in os.listdir(path):
+        filepath = os.path.join(path, file)
+        purename = os.path.splitext(file)[0]
+        nameparts = purename.split('-')
+        title = nameparts[0]
+        author = nameparts[1]
+        year = int(nameparts[2])
+        with open(filepath, 'r', encoding = 'utf-8') as file:
+            text = file.read()
+        noveldata.append({'text': text, 'title': title, 'author': author, 'year': year})
+    dataframe = pd.DataFrame(noveldata)
+    dataframe = dataframe.sort_values('year').reset_index(drop=True)
+    return dataframe
+        
+    
 
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
@@ -120,4 +136,4 @@ if __name__ == "__main__":
         print(subjects_by_verb_pmi(row["parsed"], "hear"))
         print("\n")
     """
-
+    print('hello')
