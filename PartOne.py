@@ -8,26 +8,10 @@ import spacy
 from pathlib import Path
 import pandas as pd
 import os
-
+import pronouncing
 
 nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
-
-
-
-def fk_level(text, d):
-    """Returns the Flesch-Kincaid Grade Level of a text (higher grade is more difficult).
-    Requires a dictionary of syllables per word.
-
-    Args:
-        text (str): The text to analyze.
-        d (dict): A dictionary of syllables per word.
-
-    Returns:
-        float: The Flesch-Kincaid Grade Level of the text. (higher grade is more difficult)
-    """
-
-    pass
 
 
 def count_syl(word, d):
@@ -55,6 +39,37 @@ def count_syl(word, d):
         if lowercaseword.endswith('e') and syllablecount > 1 and lowercaseword[-2] not in vowels:
             syllablecount -= 1
         return max(1, syllablecount)
+    
+def fk_level(text, d):
+    """Returns the Flesch-Kincaid Grade Level of a text (higher grade is more difficult).
+    Requires a dictionary of syllables per word.
+
+    Args:
+        text (str): The text to analyze.
+        d (dict): A dictionary of syllables per word.
+
+    Returns:
+        float: The Flesch-Kincaid Grade Level of the text. (higher grade is more difficult)
+    """
+    fullstoptext = text.replace('?', '.').replace('!', '.')
+    sentences = fullstoptext.split('.')
+    sentences = [sentence.strip() for sentence in sentences if sentence.strip()]
+    sentencecount = len(sentences)
+    words = []
+    textunhyphenated = text.replace('--', ' ')
+    for word in textunhyphenated.split():
+        realword = word.strip(".,?!:;()_’-[]").strip('"')
+        if realword:
+            words.append(realword)
+    wordcount = len(words)
+    syllablecount = 0
+    for word in words:
+        syllablecount += count_syl(word, d)
+    fkscore = 0.39(wordcount / sentencecount) + 11.8(syllablecount / wordcount) - 15.59
+    return round(fkscore, 2)
+    
+def flesh_kincaid():
+    pass
 
 
 def read_novels(path=Path.cwd() / "texts" / "novels"):
