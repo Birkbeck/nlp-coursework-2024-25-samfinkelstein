@@ -4,6 +4,8 @@
 
 import nltk
 from nltk.tokenize import RegexpTokenizer
+from nltk import BigramCollocationFinder
+from nltk.collocations import BigramAssocMeasures
 import spacy
 from pathlib import Path
 import pandas as pd
@@ -117,6 +119,7 @@ def get_fks(df):
 
 def subjects_by_verb_pmi(doc, target_verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
+
     pass
 
 
@@ -127,8 +130,8 @@ def subjects_by_verb_count(doc, verb):
 
 
 
-def adjective_counts(doc):
-    """Extracts the most common adjectives in a parsed document. Returns a list of tuples."""
+def syntacticobjectcount(doc):
+    """Extracts the most common syntactive objects in a parsed document. Returns a list of tuples."""
     pass
 
 
@@ -147,7 +150,7 @@ if __name__ == "__main__":
     #print(get_ttrs(df))
     #print(get_fks(df))
     #df = pd.read_pickle(Path.cwd() / "pickles" /"name.pickle")
-    # print(adjective_counts(df))
+    # print(syntacticobjectcount(df))
     """ 
     for i, row in df.iterrows():
         print(row["title"])
