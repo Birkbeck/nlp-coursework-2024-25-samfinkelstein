@@ -9,6 +9,7 @@ from pathlib import Path
 import pandas as pd
 import os
 import pronouncing
+import pickle
 
 nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
@@ -94,10 +95,15 @@ def flesh_kincaid(df):
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
     the resulting  DataFrame to a pickle file"""
-    pass
+    df['Parsed Doc'] = df['text'].apply(nlp(str(df[0])))
+    with open(store_path, 'wb') as file:
+        pickle.dump(df, file)
+    return df
 
-
-
+def read_pickle(path=Path.cwd() / "pickles" /"name.pickle"):
+    with open(path, 'rb') as file:
+        df = pickle.load(file)
+        return df
 
 
 def get_fks(df):
