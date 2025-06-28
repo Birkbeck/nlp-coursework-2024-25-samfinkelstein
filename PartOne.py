@@ -26,6 +26,7 @@ def fk_level(text, d):
     Returns:
         float: The Flesch-Kincaid Grade Level of the text. (higher grade is more difficult)
     """
+
     pass
 
 
@@ -40,7 +41,20 @@ def count_syl(word, d):
     Returns:
         int: The number of syllables in the word.
     """
-    pass
+    lowercaseword = word.lower()
+    if lowercaseword in d:
+        return d[lowercaseword]
+    else:
+        vowels = 'aeiou'
+        syllablecount = 0
+        previouslettervowel = False
+        for letter in lowercaseword:
+            if letter in vowels and not previouslettervowel:
+                syllablecount += 1
+            previouslettervowel = True
+        if lowercaseword.endswith('e') and syllablecount > 1 and lowercaseword[-2] not in vowels:
+            syllablecount -= 1
+        return max(1, syllablecount)
 
 
 def read_novels(path=Path.cwd() / "texts" / "novels"):
