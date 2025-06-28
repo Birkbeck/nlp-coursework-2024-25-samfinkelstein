@@ -13,21 +13,47 @@ import pronouncing
 nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
 
+def read_novels_list(path=Path.cwd() / "texts" / "novels"):
+    noveldata = []
+    filetype = '.txt'
+    for filename in os.listdir(path):
+        filepath = os.path.join(path, filename)
+        purename = os.path.splitext(filename)[0]
+        nameparts = purename.split('-')
+        title = nameparts[0]
+        author = nameparts[1]
+        year = int(nameparts[2])
+        with open(filepath, 'r', encoding = 'utf-8') as file:
+            text = file.read()
+        noveldata.append({'text': text, 'title': title, 'author': author, 'year': year})
+    return noveldata
 
-def count_syl(word, d):
-    """Counts the number of syllables in a word given a dictionary of syllables per word.
-    if the word is not in the dictionary, syllables are estimated by counting vowel clusters
+def read_novels(path=Path.cwd() / "texts" / "novels"):
+    dataframe = pd.DataFrame(read_novels_list(path))
+    dataframe = dataframe.sort_values('year').reset_index(drop=True)
+    return dataframe
 
-    Args:
-        word (str): The word to count syllables for.
-        d (dict): A dictionary of syllables per word.
+def nltk_ttr(text):
+    """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
+    tokens = RegexpTokenizer(r"\b\w+(?:'/w+)?\b").tokenize(text)
+    tokencount = len(tokens)
+    types = set(token.lower() for token in tokens)
+    ttr = len(types)/len(tokens)
+    return ttr
 
-    Returns:
-        int: The number of syllables in the word.
-    """
+
+def get_ttrs(df):
+    """helper function to add ttr to a dataframe"""#? this extracts a dictionary from a df, no?
+    results = {}
+    for i, row in df.iterrows():
+        results[row["title"]] = nltk_ttr(row["text"])
+    return results
+
+
+def count_syl(word):
     lowercaseword = word.lower()
-    if lowercaseword in d:
-        return d[lowercaseword]
+    if pronouncing.syllable_count(lowercaseword) is not None:
+        return pronouncing.syllable_count(lowercaseword)
     else:
         vowels = 'aeiou'
         syllablecount = 0
@@ -40,17 +66,7 @@ def count_syl(word, d):
             syllablecount -= 1
         return max(1, syllablecount)
     
-def fk_level(text, d):
-    """Returns the Flesch-Kincaid Grade Level of a text (higher grade is more difficult).
-    Requires a dictionary of syllables per word.
-
-    Args:
-        text (str): The text to analyze.
-        d (dict): A dictionary of syllables per word.
-
-    Returns:
-        float: The Flesch-Kincaid Grade Level of the text. (higher grade is more difficult)
-    """
+def fk_level(text):
     fullstoptext = text.replace('?', '.').replace('!', '.')
     sentences = fullstoptext.split('.')
     sentences = [sentence.strip() for sentence in sentences if sentence.strip()]
@@ -64,33 +80,16 @@ def fk_level(text, d):
     wordcount = len(words)
     syllablecount = 0
     for word in words:
-        syllablecount += count_syl(word, d)
+        syllablecount += count_syl(word)
     fkscore = 0.39(wordcount / sentencecount) + 11.8(syllablecount / wordcount) - 15.59
     return round(fkscore, 2)
     
-def flesh_kincaid():
-    pass
+def flesh_kincaid(df):
+    fkdict = {}
+    listofnoveldata = df.values.tolist()
+    for novel in listofnoveldata:
+        fkdict[novel[1]] = fk_level(novel[0])
 
-
-def read_novels(path=Path.cwd() / "texts" / "novels"):
-    """Reads texts from a directory of .txt files and returns a DataFrame with the text, title,
-    author, and year"""
-    noveldata = []
-    filetype = '.txt'
-    for file in os.listdir(path):
-        filepath = os.path.join(path, file)
-        purename = os.path.splitext(file)[0]
-        nameparts = purename.split('-')
-        title = nameparts[0]
-        author = nameparts[1]
-        year = int(nameparts[2])
-        with open(filepath, 'r', encoding = 'utf-8') as file:
-            text = file.read()
-        noveldata.append({'text': text, 'title': title, 'author': author, 'year': year})
-    dataframe = pd.DataFrame(noveldata)
-    dataframe = dataframe.sort_values('year').reset_index(drop=True)
-    return dataframe
-        
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
@@ -98,21 +97,7 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     pass
 
 
-def nltk_ttr(text):
-    """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
-    tokens = RegexpTokenizer(r"\b\w+(?:'/w+)?\b").tokenize(text)
-    tokencount = len(tokens)
-    types = set(token.lower() for token in tokens)
-    ttr = len(types)/len(tokens)
-    return ttr
 
-
-def get_ttrs(df):
-    """helper function to add ttr to a dataframe"""
-    results = {}
-    for i, row in df.iterrows():
-        results[row["title"]] = nltk_ttr(row["text"])
-    return results
 
 
 def get_fks(df):
