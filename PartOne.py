@@ -70,10 +70,12 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
 
 
 def nltk_ttr(text):
-    """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize.""" #seems like the wrong advice given constraints of question so using a different nltk tokenizer
+    """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
     tokens = RegexpTokenizer(r"\b\w+(?:'/w+)?\b").tokenize(text)
     tokencount = len(tokens)
-    pass
+    types = set(token.lower() for token in tokens)
+    ttr = len(types)/len(tokens)
+    return ttr
 
 
 def get_ttrs(df):
