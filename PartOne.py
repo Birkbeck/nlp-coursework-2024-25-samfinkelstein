@@ -144,8 +144,6 @@ def subjects_by_verb_pmi(doc, targetverb):
                     if cleansubject:
                         pair = (subject,targetverb.lower())
                         subjectverbpairs.append(pair)
-                        subjectcounter[subject] += 1
-                        verbcounter[targetverb.lower()] += 1
     finder = BigramCollocationFinder.from_words([pair[0] for pair in subjectverbpairs] + [pair[1] for pair in subjectverbpairs])
     return finder.nbest(BigramAssocMeasures.pmi, 10)
 
