@@ -193,6 +193,10 @@ if __name__ == "__main__":
         nltk.data.find('corpora/cmudict')
     except LookupError:
         nltk.download("cmudict")
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt')
     parse(df)
     print(df.head())
     print(get_ttrs(df))
