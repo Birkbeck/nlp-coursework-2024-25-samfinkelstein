@@ -74,16 +74,9 @@ def count_syl(word):
         return max(1, syllablecount)
     
 def fk_level(text):
-    fullstoptext = text.replace('?', '.').replace('!', '.')
-    sentences = fullstoptext.split('.')
-    sentences = [sentence.strip() for sentence in sentences if sentence.strip()]
+    sentences = nltk.sent_tokenize(text)
     sentencecount = len(sentences)
-    words = []
-    textunhyphenated = text.replace('--', ' ')
-    for word in textunhyphenated.split():
-        realword = word.strip(".,?!:;()_’-[]").strip('"')
-        if realword:
-            words.append(realword)
+    words = [word for word in nltk.word_tokenize(text) if word.isalpha()]
     wordcount = len(words)
     syllablecount = 0
     for word in words:
