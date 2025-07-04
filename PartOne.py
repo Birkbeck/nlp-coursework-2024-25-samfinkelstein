@@ -4,6 +4,7 @@
 
 import nltk
 from nltk.tokenize import RegexpTokenizer
+from nltk.corpus import stopwords
 from nltk import BigramCollocationFinder
 from nltk.collocations import BigramAssocMeasures
 import spacy
@@ -12,6 +13,7 @@ import pandas as pd
 import os
 import pronouncing
 import pickle
+from collections import Counter
 
 nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
@@ -121,20 +123,34 @@ def subjectfinder(verb):
     for child in verb.children:
         if child.dep_ in ["nsubj", "nsubjpass"]:
             subjects.append(child)
-    if verb.dep_ = "aux":
-        head = verb.head
-        for child in head.children:
-            if child.dep_ in ["nsubj", "nsubjpass"]:
-                subjects.append(child)
     return subjects
+
+def subjectcleaner(subject):
+    normsubject = subject.strip().lower()
+    stopwords = set(stopwords.words("english"))
+    if normsubject in stopwords:
+        return None
+    return normsubject
 
 def subjects_by_verb_pmi(doc, targetverb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
+    subjectcounter = Counter()
+    verbcounter = Counter()
+    subjectverbpairs = []
     for sentence in doc.sents:
         for token in sentence:
             if token.lemma_lower() == targetverb.lower() or token.text.lower() == targetverb.lower():
-                subjects = subjectfinder(targetverb)
-
+                subjects = subjectfinder(token)
+                for subject in subjects:
+                    cleansubject = subjectcleaner(subject)
+                    if cleansubject:
+                        pair = (subject,targetverb.lower())
+                        subjectverbpairs.append(pair)
+                        subjectcounter[subject] += 1
+                        verbcounter[targetverb.lower()] += 1
+    finder = BigramCollocationFinder.from_words(pair[0] for pair in subjectverbpairs + pair[1] for pair in subjectverbpairs)
+    finder.apply_freq_filter(2)
+    pmiscores = finder.score_ngrams(BigramAssocMeasures.pmi)
     pass
 
 
