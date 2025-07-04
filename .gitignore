@@ -199,3 +199,4 @@ cython_debug/
 .cursorindexingignore
 
 .nltkenv/
+pickles/

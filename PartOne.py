@@ -133,7 +133,7 @@ def subjectfinder(verb):
     return subjects
 
 def subjectcleaner(subject):
-    normsubject = subject.strip().lower()
+    normsubject = subject.text.strip().lower()
     stopwordsset = set(stopwords.words("english"))
     if normsubject in stopwordsset:
         return None
