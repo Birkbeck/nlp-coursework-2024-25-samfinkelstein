@@ -101,7 +101,7 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     path = store_path / out_name
     with open(path, 'wb') as file:
         pickle.dump(df, file)
-    return df
+    return dfs
 
 def read_pickle(path=Path.cwd() / "pickles" /"name.pickle"):
     with open(path, 'rb') as file:
