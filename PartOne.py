@@ -137,36 +137,36 @@ def subjects_by_verb_pmi(doc, targetverb):
     subjectverbpairs = []
     for sentence in doc.sents:
         for token in sentence:
-            if token.lemma_lower() == targetverb.lower() or token.text.lower() == targetverb.lower():
+            if token.lemma_.lower() == targetverb.lower() or token.text.lower() == targetverb.lower():
                 subjects = subjectfinder(token)
                 for subject in subjects:
                     cleansubject = subjectcleaner(subject)
                     if cleansubject:
-                        pair = (subject,targetverb.lower())
+                        pair = (cleansubject,targetverb.lower())
                         subjectverbpairs.append(pair)
-    finder = BigramCollocationFinder.from_words([pair[0] for pair in subjectverbpairs] + [pair[1] for pair in subjectverbpairs])
-    return finder.nbest(BigramAssocMeasures.pmi, 10)
-
+    finder = BigramCollocationFinder.from_documents(subjectverbpairs)
+    toppairlist = finder.nbest(BigramAssocMeasures.pmi, 10)
+    subjectlist = []
+    for pair in toppairlist:
+        subjectlist.append(pair[0])
+    return subjectlist
 
 
 def subjects_by_verb_count(doc, verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
     subjectcounter = Counter()
-    subjectverbpairs = []
     for sentence in doc.sents:
         for token in sentence:
-            if token.lemma_lower() == targetverb.lower() or token.text.lower() == targetverb.lower():
+            if token.lemma_.lower() == targetverb.lower() or token.text.lower() == targetverb.lower():
                 subjects = subjectfinder(token)
                 for subject in subjects:
                     cleansubject = subjectcleaner(subject)
                     if cleansubject:
-                        pair = (subject,targetverb.lower())
-                        subjectverbpairs.append(pair)
-                        subjectcounter[subject] += 1
-    finder = BigramCollocationFinder.from_words([pair[0] for pair in subjectverbpairs] + [pair[1] for pair in subjectverbpairs])
-    return finder.nbest(BigramAssocMeasures.pmi, 10)
-    pass
-
+                        subjectcounter[cleansubject] += 1
+    commonsubjects = []
+    for subject, count in subjectcounter.most_common(10):
+        commonsubjects.append(subject)
+    return commonsubjects
 
 
 def syntacticobjectcount(doc):
