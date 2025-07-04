@@ -195,7 +195,10 @@ if __name__ == "__main__":
     print(path)
     df = read_novels(path) # this line will fail until you have completed the read_novels function above.
     print(df.head())
-    nltk.download("cmudict")
+    try:
+        nltk.data.find('corpora/cmudict')
+    except LookupError:
+        nltk.download("cmudict")
     parse(df)
     print(df.head())
     print(get_ttrs(df))
