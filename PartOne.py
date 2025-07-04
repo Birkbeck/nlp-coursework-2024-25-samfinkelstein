@@ -121,7 +121,7 @@ def subjectfinder(verb):
     for child in verb.children:
         if child.dep_ in ["nsubj", "nsubjpass"]:
             subjects.append(child)
-    if verbtoken.dep_ = "aux":
+    if verb.dep_ = "aux":
         head = verb.head
         for child in head.children:
             if child.dep_ in ["nsubj", "nsubjpass"]:
