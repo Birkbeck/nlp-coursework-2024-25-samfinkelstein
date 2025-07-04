@@ -152,7 +152,7 @@ def subjects_by_verb_pmi(doc, targetverb):
     return subjectlist
 
 
-def subjects_by_verb_count(doc, verb):
+def subjects_by_verb_count(doc, targetverb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
     subjectcounter = Counter()
     for sentence in doc.sents:
@@ -170,8 +170,15 @@ def subjects_by_verb_count(doc, verb):
 
 
 def syntacticobjectcount(doc):
-    """Extracts the most common syntactive objects in a parsed document. Returns a list of tuples."""
-    pass
+    """Extracts the most common syntactic objects in a parsed document. Returns a list."""
+    objects = [token.dep_ for token in doc]
+    objectcounter = Counter(objects).most_common(10)
+    commonobjects = []
+    for syntacticobject, count in objectcounter:
+        commonobjects.append(syntacticobject)
+    return commonobjects
+
+
 
 
 
