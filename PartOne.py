@@ -66,7 +66,9 @@ def count_syl(word):
         for letter in lowercaseword:
             if letter in vowels and not previouslettervowel:
                 syllablecount += 1
-            previouslettervowel = True
+                previouslettervowel = True
+            elif letter not in vowels:
+                previouslettervowel = False
         if lowercaseword.endswith('e') and syllablecount > 1 and lowercaseword[-2] not in vowels:
             syllablecount -= 1
         return max(1, syllablecount)
@@ -86,7 +88,7 @@ def fk_level(text):
     syllablecount = 0
     for word in words:
         syllablecount += count_syl(word)
-    fkscore = 0.39(wordcount / sentencecount) + 11.8(syllablecount / wordcount) - 15.59
+    fkscore = 0.39 * (wordcount / sentencecount) + 11.8 * (syllablecount / wordcount) - 15.59
     return round(fkscore, 2)
     
 def flesh_kincaid(df):
@@ -94,13 +96,16 @@ def flesh_kincaid(df):
     listofnoveldata = df.values.tolist()
     for novel in listofnoveldata:
         fkdict[novel[1]] = fk_level(novel[0])
+    return fkdict
+
 
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
     the resulting  DataFrame to a pickle file"""
-    df['parsed'] = df['text'].apply(nlp(str(df[0])))
-    with open(store_path, 'wb') as file:
+    df['parsed'] = df['text'].apply(nlp)
+    path = store_path / out_name
+    with open(path, 'wb') as file:
         pickle.dump(df, file)
     return df
 
@@ -109,7 +114,7 @@ def read_pickle(path=Path.cwd() / "pickles" /"name.pickle"):
         df = pickle.load(file)
         return df
 
-
+'''
 def get_fks(df):
     """helper function to add fk scores to a dataframe"""
     results = {}
@@ -117,6 +122,7 @@ def get_fks(df):
     for i, row in df.iterrows():
         results[row["title"]] = round(fk_level(row["text"], cmudict), 4)
     return results
+    '''
 
 def subjectfinder(verb):
     subjects = []
@@ -127,8 +133,8 @@ def subjectfinder(verb):
 
 def subjectcleaner(subject):
     normsubject = subject.strip().lower()
-    stopwords = set(stopwords.words("english"))
-    if normsubject in stopwords:
+    stopwordsset = set(stopwords.words("english"))
+    if normsubject in stopwordsset:
         return None
     return normsubject
 
@@ -181,7 +187,6 @@ def syntacticobjectcount(doc):
 
 
 
-
 if __name__ == "__main__":
     """
     uncomment the following lines to run the functions once you have completed them
@@ -190,14 +195,16 @@ if __name__ == "__main__":
     print(path)
     df = read_novels(path) # this line will fail until you have completed the read_novels function above.
     print(df.head())
-    #nltk.download("cmudict")
-    #parse(df)
-    #print(df.head())
-    #print(get_ttrs(df))
-    #print(get_fks(df))
-    #df = pd.read_pickle(Path.cwd() / "pickles" /"name.pickle")
-    # print(syntacticobjectcount(df))
-    """ 
+    nltk.download("cmudict")
+    parse(df)
+    print(df.head())
+    print(get_ttrs(df))
+    print(flesh_kincaid(df))
+    df = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
+    for i, row in df.iterrows():
+        print(row["title"])
+        print(syntacticobjectcount(row["parsed"]))
+        print("\n")  
     for i, row in df.iterrows():
         print(row["title"])
         print(subjects_by_verb_count(row["parsed"], "hear"))
@@ -207,4 +214,4 @@ if __name__ == "__main__":
         print(row["title"])
         print(subjects_by_verb_pmi(row["parsed"], "hear"))
         print("\n")
-    """
+  
