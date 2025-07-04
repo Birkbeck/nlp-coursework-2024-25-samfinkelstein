@@ -97,7 +97,7 @@ def flesh_kincaid(df):
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
     """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
     the resulting  DataFrame to a pickle file"""
-    df['Parsed Doc'] = df['text'].apply(nlp(str(df[0])))
+    df['parsed'] = df['text'].apply(nlp(str(df[0])))
     with open(store_path, 'wb') as file:
         pickle.dump(df, file)
     return df
@@ -116,9 +116,24 @@ def get_fks(df):
         results[row["title"]] = round(fk_level(row["text"], cmudict), 4)
     return results
 
+def subjectfinder(verb):
+    subjects = []
+    for child in verb.children:
+        if child.dep_ in ["nsubj", "nsubjpass"]:
+            subjects.append(child)
+    if verbtoken.dep_ = "aux":
+        head = verb.head
+        for child in head.children:
+            if child.dep_ in ["nsubj", "nsubjpass"]:
+                subjects.append(child)
+    return subjects
 
-def subjects_by_verb_pmi(doc, target_verb):
+def subjects_by_verb_pmi(doc, targetverb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
+    for sentence in doc.sents:
+        for token in sentence:
+            if token.lemma_lower() == targetverb.lower() or token.text.lower() == targetverb.lower():
+                subjects = subjectfinder(targetverb)
 
     pass
 
