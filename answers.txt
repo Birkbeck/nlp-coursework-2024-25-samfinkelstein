@@ -1,1 +1,4 @@
-Answers to the text questions go here.
+PART ONE
+1d)
+The Flesch Kincaid score, which counts the syllables, words and sentences in a text to estimate how difficult it is to read, is not universally valid, robust or reliable. One context in which it might not be appropriate is an academic one. Academic writing often uses language specific to a particular discipline: a text might contain a variety of different, long words that appear infrequently, but these might convey the complicated ideas being discussed more clearly and directly than simpler, more generic language, to the intended audience (who may be more familiar with the terms and concepts in question than a lay audience).
+Another context in which the Flesch Kincaid score may not usefully assess the readability of a text is for non-prose writing, like poetry. A poem might put language together in an unconventional way, subverting expectations of how punctuation and sentence structure shape meaning. Although a human reader might have no trouble reading the poem (and enjoy the surprising and playful syntactic techniques), it would fail to meet the Flesch Kincaid test's rigid standards.
