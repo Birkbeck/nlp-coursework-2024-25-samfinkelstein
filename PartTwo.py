@@ -44,10 +44,14 @@ parameters, except for omitting English stopwords and setting max_features to
 3000. Split the data into a train and test set, using stratified sampling, with a
 random seed of 26.
 '''
-
-def vectorize(df):
-    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
-    vectors = vectorizer.fit_transform(df['speech'])
-    return vectors
-
 def traintestsplitter(df):
+    speechtrain, speechtest, partytrain, partytest = train_test_split(df['speech'], df['party'], random_state = 26, stratify = df['party'])
+    return speechtrain, speechtest, partytrain, partytest
+    
+def vectorize(trainX, testX):
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
+    trainvectors = vectorizer.fit_transform(trainX)
+    testvectors = vectorizer.fit_transform(testX)
+    return trainvectors, testvectors
+
+
