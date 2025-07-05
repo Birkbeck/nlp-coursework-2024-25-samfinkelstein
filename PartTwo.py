@@ -75,19 +75,21 @@ def classifierresults(testY, predY, classifiername):
     print(f'Classification Report for {classifiername}')
     print(classification_report(testY, predY))
     
-    
-trainX, testX, trainY, testY = traintestsplitter(df)
-trainXvectors, testXvectors = vectorize(trainX, testX)
-rfpreds = randomforest(trainXvectors, trainY, testXvectors)
-svmpreds = svm(trainXvectors, trainY, testXvectors)
-classifierresults(testY, rfpreds, 'Random Forest Classifier')
-classifierresults(testY, svmpreds, 'SVM')
+def resultreporter(df, vectorizerfunction):    
+    trainX, testX, trainY, testY = traintestsplitter(df)
+    trainXvectors, testXvectors = vectorizerfunction(trainX, testX)
+    rfpreds = randomforest(trainXvectors, trainY, testXvectors)
+    svmpreds = svm(trainXvectors, trainY, testXvectors)
+    classifierresults(testY, rfpreds, 'Random Forest Classifier')
+    classifierresults(testY, svmpreds, 'SVM')
+
+resultreporter(df5, vectorize1)
 
 def vectorize2(trainX, testX):
-    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000, ngram_range = (1, 3))
     trainXvectors = vectorizer.fit_transform(trainX)
     testXvectors = vectorizer.transform(testX)
     return trainXvectors, testXvectors
 
-
+resultreporter(df5, vectorize2)
 
