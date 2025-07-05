@@ -1,5 +1,7 @@
 import pandas as pd
-from sklearn.feature_extraction import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+#from sklearn.model_selection import train_test_split
+
 def readhansard():
     df = pd.read_csv("p2-texts/hansard40000.csv")
     return df
@@ -42,11 +44,8 @@ parameters, except for omitting English stopwords and setting max_features to
 3000. Split the data into a train and test set, using stratified sampling, with a
 random seed of 26.
 '''
-def speechextracter(df):
-    speechlist = df['speech'].values.tolist()
-    return speechlist
-    
-def vectorize():
-    #traindata = 
-    #testdata =
-    pass
+
+def vectorize(df):
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
+    vectors = vectorizer.fit_transform(df['speech'])
+    return vectors
