@@ -51,7 +51,7 @@ def traintestsplitter(df):
     speechtrain, speechtest, partytrain, partytest = train_test_split(df['speech'], df['party'], random_state = 26, stratify = df['party'])
     return speechtrain, speechtest, partytrain, partytest
 
-def vectorize(trainX, testX):
+def vectorize1(trainX, testX):
     vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
     trainXvectors = vectorizer.fit_transform(trainX)
     testXvectors = vectorizer.transform(testX)
@@ -75,6 +75,7 @@ def classifierresults(testY, predY, classifiername):
     print(f'Classification Report for {classifiername}')
     print(classification_report(testY, predY))
     
+    
 trainX, testX, trainY, testY = traintestsplitter(df)
 trainXvectors, testXvectors = vectorize(trainX, testX)
 rfpreds = randomforest(trainXvectors, trainY, testXvectors)
@@ -82,6 +83,11 @@ svmpreds = svm(trainXvectors, trainY, testXvectors)
 classifierresults(testY, rfpreds, 'Random Forest Classifier')
 classifierresults(testY, svmpreds, 'SVM')
 
+def vectorize2(trainX, testX):
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
+    trainXvectors = vectorizer.fit_transform(trainX)
+    testXvectors = vectorizer.transform(testX)
+    return trainXvectors, testXvectors
 
 
 
