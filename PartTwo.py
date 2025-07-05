@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, f1_score
 from sklearn import svm
+import spacy
 
 def readhansard():
     df = pd.read_csv("p2-texts/hansard40000.csv")
@@ -63,7 +64,7 @@ def randomforest(trainX, trainY, testX):
     predictY = classifier.predict(testX)
     return predictY
 
-def svm(trainX, trainY, testX):
+def svmC(trainX, trainY, testX):
     classifier = svm.SVC(kernel = 'linear')
     classifier.fit(trainX, trainY)
     predictY = classifier.predict(testX)
@@ -79,7 +80,7 @@ def resultreporter(df, vectorizerfunction):
     trainX, testX, trainY, testY = traintestsplitter(df)
     trainXvectors, testXvectors = vectorizerfunction(trainX, testX)
     rfpreds = randomforest(trainXvectors, trainY, testXvectors)
-    svmpreds = svm(trainXvectors, trainY, testXvectors)
+    svmpreds = svmC(trainXvectors, trainY, testXvectors)
     classifierresults(testY, rfpreds, 'Random Forest Classifier')
     classifierresults(testY, svmpreds, 'SVM')
 
@@ -93,3 +94,6 @@ def vectorize2(trainX, testX):
 
 resultreporter(df5, vectorize2)
 
+def customtokenizer(text):
+    #lemmatization ; filter out short tokens OR stopwords ; 
+    pass
