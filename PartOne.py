@@ -83,7 +83,6 @@ def count_syl(word):
 def fk_level(text):
     sentences = nltk.sent_tokenize(text)
     sentencecount = len(sentences)
-    punctuation = set("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
     words = [word for word in nltk.word_tokenize(text) if any(character.isalpha() for character in word)]
     wordcount = len(words)
     syllablecount = 0
