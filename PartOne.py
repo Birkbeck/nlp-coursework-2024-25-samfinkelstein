@@ -89,9 +89,6 @@ def fk_level(text):
     syllablecount = 0
     for word in words:
         syllablecount += count_syl(word)
-    print(f"  - Sentence Count: {sentencecount}")
-    print(f"  - Word Count: {wordcount}")
-    print(f"  - Syllable Count: {syllablecount}")
     fkscore = 0.39 * (wordcount / sentencecount) + 11.8 * (syllablecount / wordcount) - 15.59
     return round(fkscore, 2)
     
@@ -105,8 +102,6 @@ def flesh_kincaid(df):
 
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
-    """Parses the text of a DataFrame using spaCy, stores the parsed docs as a column and writes 
-    the resulting  DataFrame to a pickle file"""
     df['parsed'] = df['text'].apply(nlp)
     os.makedirs(store_path, exist_ok = True)
     path = store_path / out_name
@@ -144,7 +139,6 @@ def subjectcleaner(subject):
     return normsubject
 
 def subjects_by_verb_pmi(doc, targetverb):
-    """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
     subjectverbpairs = []
     for sentence in doc.sents:
         for token in sentence:
@@ -164,7 +158,6 @@ def subjects_by_verb_pmi(doc, targetverb):
 
 
 def subjects_by_verb_count(doc, targetverb):
-    """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
     subjectcounter = Counter()
     for sentence in doc.sents:
         for token in sentence:
@@ -181,7 +174,6 @@ def subjects_by_verb_count(doc, targetverb):
 
 
 def syntacticobjectcount(doc):
-    """Extracts the most common syntactic objects in a parsed document. Returns a list."""
     objects = [token.dep_ for token in doc]
     objectcounter = Counter(objects).most_common(10)
     commonobjects = []
@@ -196,28 +188,10 @@ if __name__ == "__main__":
     """
     uncomment the following lines to run the functions once you have completed them
     """
-    '''path = Path.cwd() / "p1-texts" / "novels"
+    path = Path.cwd() / "p1-texts" / "novels"
     print(path)
     df = read_novels(path) # this line will fail until you have completed the read_novels function above.'''
-    # Define the path to your data and the output pickle file
-    novels_path = Path.cwd() / "p1-texts" / "novels"
-    pickle_file = Path.cwd() / "pickles" / "parsed.pickle"
-
-    # Check if the parsed data already exists
-    if pickle_file.exists():
-        print("Loading pre-parsed data from pickle file...")
-        df = pd.read_pickle(pickle_file)
-    else:
-        print("No pickle file found. Starting full parsing process...")
-        # 1. Read the novels from text files
-        df = read_novels(novels_path)
-
-        # 2. Parse with spaCy (the slow part)
-        df = parse(df) # The parse function already saves the pickle file
-    
-
     print(df.head())
-    df_single_book = df.head(1) 
     try:
         nltk.data.find('corpora/cmudict')
     except LookupError:
@@ -234,13 +208,11 @@ if __name__ == "__main__":
         nltk.data.find('corpora/stopwords')
     except LookupError:
         nltk.download('stopwords')
-    #parse(df)
-    #print(df.head())
-    #print(get_ttrs(df))
-    print(flesh_kincaid(df_single_book))
-    #df = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
-
-    '''
+    parse(df)
+    print(df.head())
+    print(get_ttrs(df))
+    print(flesh_kincaid(df))
+    df = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
     for i, row in df.iterrows():
         print(row["title"])
         print(syntacticobjectcount(row["parsed"]))
@@ -249,9 +221,8 @@ if __name__ == "__main__":
         print(row["title"])
         print(subjects_by_verb_count(row["parsed"], "hear"))
         print("\n")
-
     for i, row in df.iterrows():
         print(row["title"])
         print(subjects_by_verb_pmi(row["parsed"], "hear"))
         print("\n")
-  '''
+
