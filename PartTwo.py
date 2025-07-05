@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-#from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split
 
 def readhansard():
     df = pd.read_csv("p2-texts/hansard40000.csv")
@@ -32,10 +32,10 @@ def dimensions(df):
 
 df = readhansard()
 df1 = labour(df)
-df2 = speakerremover(df)
-df3 = fourpartysystem(df)
-df4 = speechonly(df)
-df5 = noshortspeeches(df)
+df2 = speakerremover(df1)
+df3 = fourpartysystem(df2)
+df4 = speechonly(df3)
+df5 = noshortspeeches(df4)
 print(dimensions(df5))
 
 '''
@@ -49,3 +49,5 @@ def vectorize(df):
     vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
     vectors = vectorizer.fit_transform(df['speech'])
     return vectors
+
+def traintestsplitter(df):
