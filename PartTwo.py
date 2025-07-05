@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, f1_score
+from sklearn import svm
 
 def readhansard():
     df = pd.read_csv("p2-texts/hansard40000.csv")
@@ -53,22 +54,33 @@ def traintestsplitter(df):
 def vectorize(trainX, testX):
     vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
     trainXvectors = vectorizer.fit_transform(trainX)
-    testXvectors = vectorizer.fit_transform(testX)
+    testXvectors = vectorizer.transform(testX)
     return trainXvectors, testXvectors
 
-def randomforest(trainX, trainY, testX, testY):
+def randomforest(trainX, trainY, testX):
     classifier = RandomForestClassifier(n_estimators = 300, random_state = 26)
     classifier.fit(trainX, trainY)
     predictY = classifier.predict(testX)
+    return predictY
 
-    #return predictions and classifier name
+def svm(trainX, trainY, testX):
+    classifier = svm.SVC(kernel = 'linear')
+    classifier.fit(trainX, trainY)
+    predictY = classifier.predict(testX)
+    return predictY
 
 def classifierresults(testY, predY, classifiername):
-    report = classification_report(testY, predY)
-    f1score = print(f'Macro-average F1 Score for {classifiername}: {f1_score(testY, predY, average = 'macro')}')
-    printreport = print(f'Classification Report for {classifiername}: {report}')
-    return f1score, printreport
+    print(f'Macro-average F1 Score for {classifiername}:')
+    print(f1_score(testY, predY, average = 'macro'))
+    print(f'Classification Report for {classifiername}')
+    print(classification_report(testY, predY))
     
+trainX, testX, trainY, testY = traintestsplitter(df)
+trainXvectors, testXvectors = vectorize(trainX, testX)
+rfpreds = randomforest(trainXvectors, trainY, testXvectors)
+svmpreds = svm(trainXvectors, trainY, testXvectors)
+classifierresults(testY, rfpreds, 'Random Forest Classifier')
+classifierresults(testY, svmpreds, 'SVM')
 
 
 
