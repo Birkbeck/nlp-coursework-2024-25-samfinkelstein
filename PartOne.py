@@ -11,9 +11,10 @@ import spacy
 from pathlib import Path
 import pandas as pd
 import os
-import pronouncing
 import pickle
 from collections import Counter
+import pronouncing
+
 
 nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
@@ -57,10 +58,16 @@ def get_ttrs(df):
 
 def count_syl(word):
     lowercaseword = word.lower()
-    if pronouncing.syllable_count(lowercaseword) is not None:
-        return pronouncing.syllable_count(lowercaseword)
+    phones = pronouncing.phones_for_word(lowercaseword)
+    if phones:
+        phonestring = phones[0]
+        vowelcount = 0
+        for character in phonestring:
+            if character.isdigit():
+                vowelcount += 1
+        return max (1, vowelcount)
     else:
-        vowels = 'aeiou'
+        vowels = 'aeiouy'
         syllablecount = 0
         previouslettervowel = False
         for letter in lowercaseword:
@@ -76,11 +83,15 @@ def count_syl(word):
 def fk_level(text):
     sentences = nltk.sent_tokenize(text)
     sentencecount = len(sentences)
-    words = [word for word in nltk.word_tokenize(text) if word.isalpha()]
+    punctuation = set("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
+    words = [word for word in nltk.word_tokenize(text) if any(character.isalpha() for character in word)]
     wordcount = len(words)
     syllablecount = 0
     for word in words:
         syllablecount += count_syl(word)
+    print(f"  - Sentence Count: {sentencecount}")
+    print(f"  - Word Count: {wordcount}")
+    print(f"  - Syllable Count: {syllablecount}")
     fkscore = 0.39 * (wordcount / sentencecount) + 11.8 * (syllablecount / wordcount) - 15.59
     return round(fkscore, 2)
     
@@ -185,10 +196,28 @@ if __name__ == "__main__":
     """
     uncomment the following lines to run the functions once you have completed them
     """
-    path = Path.cwd() / "p1-texts" / "novels"
+    '''path = Path.cwd() / "p1-texts" / "novels"
     print(path)
-    df = read_novels(path) # this line will fail until you have completed the read_novels function above.
+    df = read_novels(path) # this line will fail until you have completed the read_novels function above.'''
+    # Define the path to your data and the output pickle file
+    novels_path = Path.cwd() / "p1-texts" / "novels"
+    pickle_file = Path.cwd() / "pickles" / "parsed.pickle"
+
+    # Check if the parsed data already exists
+    if pickle_file.exists():
+        print("Loading pre-parsed data from pickle file...")
+        df = pd.read_pickle(pickle_file)
+    else:
+        print("No pickle file found. Starting full parsing process...")
+        # 1. Read the novels from text files
+        df = read_novels(novels_path)
+
+        # 2. Parse with spaCy (the slow part)
+        df = parse(df) # The parse function already saves the pickle file
+    
+
     print(df.head())
+    df_single_book = df.head(1) 
     try:
         nltk.data.find('corpora/cmudict')
     except LookupError:
@@ -197,11 +226,21 @@ if __name__ == "__main__":
         nltk.data.find('tokenizers/punkt')
     except LookupError:
         nltk.download('punkt')
-    parse(df)
-    print(df.head())
-    print(get_ttrs(df))
-    print(flesh_kincaid(df))
-    df = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+    except LookupError:
+        nltk.download('punkt_tab')
+    try:
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        nltk.download('stopwords')
+    #parse(df)
+    #print(df.head())
+    #print(get_ttrs(df))
+    print(flesh_kincaid(df_single_book))
+    #df = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
+
+    '''
     for i, row in df.iterrows():
         print(row["title"])
         print(syntacticobjectcount(row["parsed"]))
@@ -215,4 +254,4 @@ if __name__ == "__main__":
         print(row["title"])
         print(subjects_by_verb_pmi(row["parsed"], "hear"))
         print("\n")
-  
+  '''
