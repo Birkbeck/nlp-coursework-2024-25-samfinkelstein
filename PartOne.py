@@ -40,7 +40,6 @@ def read_novels(path=Path.cwd() / "texts" / "novels"):
     return dataframe
 
 def nltk_ttr(text):
-    """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
     tokens = RegexpTokenizer(r"\b\w+(?:'/w+)?\b").tokenize(text)
     tokencount = len(tokens)
     types = set(token.lower() for token in tokens)
@@ -131,7 +130,7 @@ def subjectfinder(verb):
     return subjects
 
 def subjectcleaner(subject):
-    normsubject = subject.text.strip().lower()
+    normsubject = subject.text.strip().strip(-).lower()
     stopwordsset = set(stopwords.words("english"))
     if normsubject in stopwordsset:
         return None
@@ -145,7 +144,7 @@ def subjects_by_verb_pmi(doc, targetverb):
                 subjects = subjectfinder(token)
                 for subject in subjects:
                     cleansubject = subjectcleaner(subject)
-                    if cleansubject:
+                    if cleansubjec and cleansubject != "_":
                         pair = (cleansubject,targetverb.lower())
                         subjectverbpairs.append(pair)
     finder = BigramCollocationFinder.from_documents(subjectverbpairs)
@@ -164,7 +163,7 @@ def subjects_by_verb_count(doc, targetverb):
                 subjects = subjectfinder(token)
                 for subject in subjects:
                     cleansubject = subjectcleaner(subject)
-                    if cleansubject:
+                    if cleansubject and cleansubject != "_":
                         subjectcounter[cleansubject] += 1
     commonsubjects = []
     for subject, count in subjectcounter.most_common(10):
