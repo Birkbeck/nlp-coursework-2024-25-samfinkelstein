@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, f1_score
 
 def readhansard():
     df = pd.read_csv("p2-texts/hansard40000.csv")
@@ -47,11 +49,27 @@ random seed of 26.
 def traintestsplitter(df):
     speechtrain, speechtest, partytrain, partytest = train_test_split(df['speech'], df['party'], random_state = 26, stratify = df['party'])
     return speechtrain, speechtest, partytrain, partytest
-    
+
 def vectorize(trainX, testX):
     vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
-    trainvectors = vectorizer.fit_transform(trainX)
-    testvectors = vectorizer.fit_transform(testX)
-    return trainvectors, testvectors
+    trainXvectors = vectorizer.fit_transform(trainX)
+    testXvectors = vectorizer.fit_transform(testX)
+    return trainXvectors, testXvectors
+
+def randomforest(trainX, trainY, testX, testY):
+    classifier = RandomForestClassifier(n_estimators = 300, random_state = 26)
+    classifier.fit(trainX, trainY)
+    predictY = classifier.predict(testX)
+
+    #return predictions and classifier name
+
+def classifierresults(testY, predY, classifiername):
+    report = classification_report(testY, predY)
+    f1score = print(f'Macro-average F1 Score for {classifiername}: {f1_score(testY, predY, average = 'macro')}')
+    printreport = print(f'Classification Report for {classifiername}: {report}')
+    return f1score, printreport
+    
+
+
 
 
