@@ -40,7 +40,7 @@ def read_novels(path=Path.cwd() / "texts" / "novels"):
     return dataframe
 
 def nltk_ttr(text):
-    tokens = RegexpTokenizer(r"\b\w+(?:'/w+)?\b").tokenize(text)
+    tokens = RegexpTokenizer(r"\b\w+(?:'\w+)?\b").tokenize(text)
     tokencount = len(tokens)
     types = set(token.lower() for token in tokens)
     ttr = len(types)/len(tokens)
