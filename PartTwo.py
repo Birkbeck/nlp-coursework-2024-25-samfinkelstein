@@ -6,6 +6,8 @@ from sklearn.metrics import classification_report, f1_score
 from sklearn import svm
 import spacy
 
+nlp = spacy.load("en_core_web_sm")
+
 def readhansard():
     df = pd.read_csv("p2-texts/hansard40000.csv")
     return df
@@ -96,4 +98,13 @@ resultreporter(df5, vectorize2)
 
 def customtokenizer(text):
     #lemmatization ; filter out short tokens OR stopwords ; 
-    pass
+    doc = nlp(text)
+    importanttokens = []
+    for token in doc:
+        if not token.is_stop:
+            if not token.is_punct:
+                if len(token) > 2:
+                    if token.is_alpha:
+                        importanttokens.append(token.lemma_.lower())
+    return importanttokens
+
