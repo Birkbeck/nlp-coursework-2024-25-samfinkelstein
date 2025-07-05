@@ -144,7 +144,7 @@ def subjects_by_verb_pmi(doc, targetverb):
                 subjects = subjectfinder(token)
                 for subject in subjects:
                     cleansubject = subjectcleaner(subject)
-                    if cleansubjec and cleansubject != "_":
+                    if cleansubject and cleansubject != "_":
                         pair = (cleansubject,targetverb.lower())
                         subjectverbpairs.append(pair)
     finder = BigramCollocationFinder.from_documents(subjectverbpairs)
