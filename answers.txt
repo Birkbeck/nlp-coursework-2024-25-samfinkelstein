@@ -19,13 +19,13 @@ These were 'issue', 'public', 'think', 'take', 'include', 'change'.
 I was relatively cautious when deciding which words to remove from the model, so that I didn't accidentally remove valuable features.
 For this same reason, I only performed two rounds of custom stop word removal.
 I tested my custom tokenizer first using the version of TfidfVectorizer specified in 2d (3000 max features, including unigrams, bigrams and trigrams), with both classifiers from the earlier questions.
-Using the random forest classifier, it performed marginally better than Vectorizer 1 and marginally worse than Vectorizer 2 (which is the same as vectorizer 1 but includes bigrams and trigrams).
+Using the random forest classifier, it performed marginally better than vectorize1 and marginally worse than vectorize2 (which is the same as vectorize1 but includes bigrams and trigrams).
 Using the SVM, it performed marginally better than both vectorizers. The SVM (using any vectorizer) performed better than the random forest classifier, so I decided to continue using the SVM.
-The SVM performed almost identically well with both of the first two vectorizers, so I decided to try removing bigrams and trigrams from Vectorizer 3 (which I call Vectorizer 4).
+The SVM performed almost identically well with both of the first two vectorizers, so I decided to try removing bigrams and trigrams from vectorize3 (which I call vectorize4).
 I found that this reduced the performance of the classifier (although only a little bit), so I put them back in.
 Then I became worried that my custom stopwords were reducing the classifier's ability to identify useful bigrams and trigrams, damaging performance.
-So I created Vectorizer 5, which was identical to Vectorizer 3 except it used a version of the original custom tokenizer (which didn't have any custom stopwords). 
-Its performance was very similar to (in fact, marginally worse than) Vectorizer 3, so I felt comfortable keeping my custom stopwords.
+So I created vectorize5, which was identical to vectorize3 except it used a version of the original custom tokenizer (which didn't have any custom stopwords). 
+Its performance was very similar to (in fact, marginally worse than) vectorize3, so I felt comfortable keeping my custom stopwords.
+Next, I created vectorize6, which used the custom stopwords in the tokenizer, and considered unigrams, bigrams and trigrams, but was limited to 2000 features.
+This performed pretty similarly to Vectorize5. Next I created a version of Vectorize3 (the most successful custom model so far) with a minimum document frequency of 3, called Vectorize7.
 
-
-then experiment with reducing max features

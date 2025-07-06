@@ -171,6 +171,12 @@ def vectorize6(trainX, testX):
     testXvectors = vectorizer.transform(testX)
     return trainXvectors, testXvectors
 
-SVMresulttester(df5, vectorize6)
+def vectorize7(trainX, testX):
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000, ngram_range = (1, 3), tokenizer = customtokenizer, min_df = 3)
+    trainXvectors = vectorizer.fit_transform(trainX)
+    testXvectors = vectorizer.transform(testX)
+    return trainXvectors, testXvectors 
+
+SVMresulttester(df5, vectorize7)
 
 
