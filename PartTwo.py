@@ -98,6 +98,13 @@ def vectorize2(trainX, testX):
 
 #resulttester(df5, vectorize2)
 
+def customtokenizeroriginal(text):
+    doc = nlp(text)
+    importanttokens = []
+    for token in doc:
+        if not token.is_stop and len(token) > 2 and token.is_alpha:
+            importanttokens.append(token.lemma_.lower())
+    return importanttokens 
 
 def customtokenizer(text):
     doc = nlp(text)
@@ -146,10 +153,24 @@ def vectorize4(trainX, testX):
     testXvectors = vectorizer.transform(testX)
     return trainXvectors, testXvectors
 
+def vectorize5(trainX, testX):
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000, ngram_range = (1, 3), tokenizer = customtokenizeroriginal)
+    trainXvectors = vectorizer.fit_transform(trainX)
+    testXvectors = vectorizer.transform(testX)
+    return trainXvectors, testXvectors
+
 def SVMresulttester(df, vectorizerfunction):    
     trainX, testX, trainY, testY = traintestsplitter(df)
     trainXvectors, testXvectors = vectorizerfunction(trainX, testX)
     svmpreds = svmC(trainXvectors, trainY, testXvectors)
     classifierresults(testY, svmpreds, 'SVM')
-    
-SVMresulttester(df5, vectorize4)
+
+def vectorize6(trainX, testX):
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 2000, ngram_range = (1, 3), tokenizer = customtokenizer)
+    trainXvectors = vectorizer.fit_transform(trainX)
+    testXvectors = vectorizer.transform(testX)
+    return trainXvectors, testXvectors
+
+SVMresulttester(df5, vectorize6)
+
+
