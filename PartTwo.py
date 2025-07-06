@@ -68,8 +68,14 @@ def randomforest(trainX, trainY, testX):
     predictY = classifier.predict(testX)
     return predictY
 
-def svmC(trainX, trainY, testX):
+def svm1(trainX, trainY, testX):
     classifier = svm.SVC(kernel = 'linear')
+    classifier.fit(trainX, trainY)
+    predictY = classifier.predict(testX)
+    return predictY
+
+def svm2(trainX, trainY, testX):
+    classifier = svm.SVC(kernel = 'linear', class_weight = 'balanced')
     classifier.fit(trainX, trainY)
     predictY = classifier.predict(testX)
     return predictY
@@ -84,7 +90,7 @@ def resulttester(df, vectorizerfunction):
     trainX, testX, trainY, testY = traintestsplitter(df)
     trainXvectors, testXvectors = vectorizerfunction(trainX, testX)
     rfpreds = randomforest(trainXvectors, trainY, testXvectors)
-    svmpreds = svmC(trainXvectors, trainY, testXvectors)
+    svmpreds = svm1(trainXvectors, trainY, testXvectors)
     classifierresults(testY, rfpreds, 'Random Forest Classifier')
     classifierresults(testY, svmpreds, 'SVM')
 
@@ -162,7 +168,13 @@ def vectorize5(trainX, testX):
 def SVMresulttester(df, vectorizerfunction):    
     trainX, testX, trainY, testY = traintestsplitter(df)
     trainXvectors, testXvectors = vectorizerfunction(trainX, testX)
-    svmpreds = svmC(trainXvectors, trainY, testXvectors)
+    svmpreds = svm1(trainXvectors, trainY, testXvectors)
+    classifierresults(testY, svmpreds, 'SVM')
+
+def SVM2resulttester(df, vectorizerfunction):
+    trainX, testX, trainY, testY = traintestsplitter(df)
+    trainXvectors, testXvectors = vectorizerfunction(trainX, testX)
+    svmpreds = svm2(trainXvectors, trainY, testXvectors)
     classifierresults(testY, svmpreds, 'SVM')
 
 def vectorize6(trainX, testX):
@@ -177,6 +189,7 @@ def vectorize7(trainX, testX):
     testXvectors = vectorizer.transform(testX)
     return trainXvectors, testXvectors
 
-SVMresulttester(df5, vectorize7)
+
+SVM2resulttester(df5, vectorize3)
 
 

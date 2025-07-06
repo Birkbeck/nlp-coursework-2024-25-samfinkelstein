@@ -27,5 +27,6 @@ Then I became worried that my custom stopwords were reducing the classifier's ab
 So I created vectorize5, which was identical to vectorize3 except it used a version of the original custom tokenizer (which didn't have any custom stopwords). 
 Its performance was very similar to (in fact, marginally worse than) vectorize3, so I felt comfortable keeping my custom stopwords.
 Next, I created vectorize6, which used the custom stopwords in the tokenizer, and considered unigrams, bigrams and trigrams, but was limited to 2000 features.
-This performed pretty similarly to Vectorize5. Vectorize7 was the same but was limited to 1500 features
+This performed pretty similarly to Vectorize5. Vectorize7 was the same but was limited to 1500 features; it performed notably worse than Vectorize6 and Vectorize3 (and also worse than Vectorize1 and Vectorize2).
+
 
