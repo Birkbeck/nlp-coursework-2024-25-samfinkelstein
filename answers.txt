@@ -28,5 +28,11 @@ So I created vectorize5, which was identical to vectorize3 except it used a vers
 Its performance was very similar to (in fact, marginally worse than) vectorize3, so I felt comfortable keeping my custom stopwords.
 Next, I created vectorize6, which used the custom stopwords in the tokenizer, and considered unigrams, bigrams and trigrams, but was limited to 2000 features.
 This performed pretty similarly to Vectorize5. Vectorize7 was the same but was limited to 1500 features; it performed notably worse than Vectorize6 and Vectorize3 (and also worse than Vectorize1 and Vectorize2).
+I stopped trying to improve performance by changing the parameters of my vectorizer, and instead looked for other ways I might be able to improve the performance of Vectorize3.
+I added a class weight parameter to my SVM classifier, balancing the classes (so that the classifier would be penalised more heavily for errors predicting the smaller classes, Lib Dems and SNP). 
+This massively improved Vectorize3's performance, and performed significantly better than any of the other models (a macro-average f1 score of 0.685; Vectorize3's was 0.589).
+(In particular, it improved on predicting Lib Dems - without the class weight balance, Vectorize3 massively underpredicted Lib Dems, with perfect precision but very low recall. 
+With the class balance, the Lib Dem precision is reduced but the recall is much higher, giving an overall significantly higher f1 score).
+
 
 

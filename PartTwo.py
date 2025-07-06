@@ -190,6 +190,6 @@ def vectorize7(trainX, testX):
     return trainXvectors, testXvectors
 
 
-SVM2resulttester(df5, vectorize3)
+print(SVM2resulttester(df5, vectorize3))
 
 
