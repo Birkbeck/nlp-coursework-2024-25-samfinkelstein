@@ -136,4 +136,20 @@ def vectorize3(trainX, testX):
 #stopwordcheck = stopwordchecker(toptokens, df5)
 #print(stopwordcheck)
 
-resulttester(df5, vectorize3)
+
+#resulttester(df5, vectorize3)
+
+#attempts to improve performance by reducing ngram range, sticking to SVM
+def vectorize4(trainX, testX):
+    vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000, ngram_range = (1, 1), tokenizer = customtokenizer)
+    trainXvectors = vectorizer.fit_transform(trainX)
+    testXvectors = vectorizer.transform(testX)
+    return trainXvectors, testXvectors
+
+def SVMresulttester(df, vectorizerfunction):    
+    trainX, testX, trainY, testY = traintestsplitter(df)
+    trainXvectors, testXvectors = vectorizerfunction(trainX, testX)
+    svmpreds = svmC(trainXvectors, trainY, testXvectors)
+    classifierresults(testY, svmpreds, 'SVM')
+    
+SVMresulttester(df5, vectorize4)
