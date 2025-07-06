@@ -55,7 +55,7 @@ random seed of 26.
 def traintestsplitter(df):
     speechtrain, speechtest, partytrain, partytest = train_test_split(df['speech'], df['party'], random_state = 26, stratify = df['party'])
     return speechtrain, speechtest, partytrain, partytest
-'''
+
 def vectorize1(trainX, testX):
     vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000)
     trainXvectors = vectorizer.fit_transform(trainX)
@@ -88,7 +88,7 @@ def resulttester(df, vectorizerfunction):
     classifierresults(testY, rfpreds, 'Random Forest Classifier')
     classifierresults(testY, svmpreds, 'SVM')
 
-resulttester(df5, vectorize1)
+#resulttester(df5, vectorize1)
 
 def vectorize2(trainX, testX):
     vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000, ngram_range = (1, 3))
@@ -96,8 +96,8 @@ def vectorize2(trainX, testX):
     testXvectors = vectorizer.transform(testX)
     return trainXvectors, testXvectors
 
-resultreporter(df5, vectorize2)
-'''
+#resulttester(df5, vectorize2)
+
 
 def customtokenizer(text):
     doc = nlp(text)
@@ -135,3 +135,5 @@ def vectorize3(trainX, testX):
 #toptokens = toptokenfinder(allspeechtokens)
 #stopwordcheck = stopwordchecker(toptokens, df5)
 #print(stopwordcheck)
+
+resulttester(df5, vectorize3)
