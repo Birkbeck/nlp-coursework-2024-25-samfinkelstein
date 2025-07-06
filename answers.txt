@@ -1,4 +1,20 @@
 PART ONE
-1d)
+1d
 The Flesch Kincaid score, which counts the syllables, words and sentences in a text to estimate how difficult it is to read, is not universally valid, robust or reliable. One context in which it might not be appropriate is an academic one. Academic writing often uses language specific to a particular discipline: a text might contain a variety of different, long words that appear infrequently, but these might convey the complicated ideas being discussed more clearly and directly than simpler, more generic language, to the intended audience (who may be more familiar with the terms and concepts in question than a lay audience).
 Another context in which the Flesch Kincaid score may not usefully assess the readability of a text is for non-prose writing, like poetry. A poem might put language together in an unconventional way, subverting expectations of how punctuation and sentence structure shape meaning. Although a human reader might have no trouble reading the poem (and enjoy the surprising and playful syntactic techniques), it would fail to meet the Flesch Kincaid test's rigid standards.
+
+2e
+My custom tokenizer uses spaCy to process the speeches. I have an empty token list, to which I append all tokens that pass a series of filters. 
+My first version of the function used three filters (the token has to be all alphabetical letters, longer than two characters, and not in spacy's default list of English stop words).
+If a token passed these filters, it would be lemmatized (using spaCy), made lowercase, and added to the token list.
+To improve classification performance (and make the most of my 3000 features), I decided to make a custom list of stopwords, with the expectation that political speeches will have domain-specific terms that are used commonly and aren't valuable for predicting which party gave the speech.
+I made two helper functions. The first, toptokenfinder(), takes the filtered token list returned by the customtokenizer and returns the 30 most common.
+The second, stopwordchecker(), takes this second token list as an argument, and the main dataframe as another argument, and makes a new dataframe of how often each party's speeches uses each of the top 30 tokens.
+These values are then normalised (by each party's respective total word count), and returned for each of the 30 tokens.
+I looked at these results and noted any word that was used with relatively similar frequency by each party. 
+I added these to a list of custom stop words, which I added as a fourth filter to my custom tokenizer.
+These were 'support', 'bill', 'time', 'say', 'know', 'want', 'come', 'place', 'good', 'today', 'amendment', 'debate', 'way', 'ensure'.
+I then ran the code a second time, with these words filtered out, giving me a second opportunity to add custom stop words to my tokenizer.
+These were 'issue', 'public', 'think', 'take', 'include', 'change'.
+I was relatively cautious when deciding which words to remove from the model, so that I didn't accidentally remove valuable features.
+
