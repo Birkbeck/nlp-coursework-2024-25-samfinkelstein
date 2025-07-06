@@ -94,7 +94,7 @@ def resulttester(df, vectorizerfunction):
     classifierresults(testY, rfpreds, 'Random Forest Classifier')
     classifierresults(testY, svmpreds, 'SVM')
 
-#resulttester(df5, vectorize1)
+resulttester(df5, vectorize1)
 
 def vectorize2(trainX, testX):
     vectorizer = TfidfVectorizer(stop_words = 'english', max_features = 3000, ngram_range = (1, 3))
@@ -102,7 +102,7 @@ def vectorize2(trainX, testX):
     testXvectors = vectorizer.transform(testX)
     return trainXvectors, testXvectors
 
-#resulttester(df5, vectorize2)
+resulttester(df5, vectorize2)
 
 def customtokenizeroriginal(text):
     doc = nlp(text)
@@ -188,7 +188,6 @@ def vectorize7(trainX, testX):
     trainXvectors = vectorizer.fit_transform(trainX)
     testXvectors = vectorizer.transform(testX)
     return trainXvectors, testXvectors
-
 
 print(SVM2resulttester(df5, vectorize3))
 
